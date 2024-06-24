@@ -59,7 +59,9 @@ export const Profile: FC = () => {
     }));
   };
 
-  return (
+  return loading ? (
+    <Preloader />
+  ) : (
     <ProfileUI
       formValue={formValue}
       isFormChanged={isFormChanged}
