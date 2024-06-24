@@ -31,20 +31,35 @@ export const initialState: TUserState = {
 
 export const loginUser = createAsyncThunk(
   'user/loginUser',
-  (data: TLoginData) => loginUserApi(data)
+  async (data: TLoginData) => {
+    const response = await loginUserApi(data);
+    setCookie('accessToken', response.accessToken);
+    localStorage.setItem('refreshToken', response.refreshToken);
+    return response;
+  }
 );
 
 export const registerUser = createAsyncThunk(
   'user/registerUser',
-  (data: TRegisterData) => registerUserApi(data)
+  async (data: TRegisterData) => {
+    const response = await registerUserApi(data);
+    setCookie('accessToken', response.accessToken);
+    localStorage.setItem('refreshToken', response.refreshToken);
+    return response;
+  }
 );
+
+export const logoutUser = createAsyncThunk('user/logout', async () => {
+  await logoutApi();
+  deleteCookie('accessToken');
+  localStorage.removeItem('refreshToken');
+});
 
 export const updateUser = createAsyncThunk(
   'user/updateUser',
   (user: Partial<TRegisterData>) => updateUserApi(user)
 );
 
-export const logoutUser = createAsyncThunk('user/logout', logoutApi);
 export const getUser = createAsyncThunk('user/getUser', getUserApi);
 
 export const userSlice = createSlice({
@@ -67,8 +82,6 @@ export const userSlice = createSlice({
         state.isAuthChecked = true;
         state.error = '';
         state.loading = false;
-        setCookie('accessToken', action.payload.accessToken);
-        localStorage.setItem('refreshToken', action.payload.refreshToken);
       });
     builder
       .addCase(loginUser.pending, (state) => {
@@ -84,8 +97,6 @@ export const userSlice = createSlice({
         state.isAuthChecked = true;
         state.error = '';
         state.loading = false;
-        setCookie('accessToken', action.payload.accessToken);
-        localStorage.setItem('refreshToken', action.payload.refreshToken);
       });
     builder
       .addCase(getUser.pending, (state) => {
@@ -129,8 +140,6 @@ export const userSlice = createSlice({
         state.user = null;
         state.isAuthChecked = false;
         state.loading = false;
-        deleteCookie('accessToken');
-        localStorage.removeItem('refreshToken');
       });
   }
 });
