@@ -15,7 +15,8 @@ import { RootState } from '../store';
 export type TUserState = {
   isAuthChecked: boolean;
   user: TUser | null;
-  error: string | null;
+  error: string;
+  loading: boolean;
 };
 
 export const initialState: TUserState = {
@@ -24,7 +25,8 @@ export const initialState: TUserState = {
     name: '',
     email: ''
   },
-  error: null
+  error: '',
+  loading: false
 };
 
 export const loginUser = createAsyncThunk(
@@ -51,73 +53,91 @@ export const userSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(registerUser.pending, (state) => {
+        state.loading = true;
+        state.error = '';
+      })
+
+      .addCase(registerUser.rejected, (state, action) => {
+        state.error = action.error.message as string;
+        state.loading = false;
+      })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.user = action.payload.user;
         state.isAuthChecked = true;
-        state.error = null;
+        state.error = '';
+        state.loading = false;
         setCookie('accessToken', action.payload.accessToken);
         localStorage.setItem('refreshToken', action.payload.refreshToken);
-      })
-      .addCase(registerUser.rejected, (state, action) => {
-        state.error = action.error.message as string;
-      })
-      .addCase(registerUser.pending, (state) => {
-        state.error = null;
       });
     builder
-      .addCase(loginUser.fulfilled, (state, action) => {
-        state.user = action.payload.user;
-        state.isAuthChecked = true;
-        state.error = null;
-        setCookie('accessToken', action.payload.accessToken);
-        localStorage.setItem('refreshToken', action.payload.refreshToken);
+      .addCase(loginUser.pending, (state) => {
+        state.error = '';
+        state.loading = true;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.error = action.error.message as string;
+        state.loading = false;
       })
-      .addCase(loginUser.pending, (state) => {
-        state.error = null;
-      });
-    builder
-      .addCase(getUser.fulfilled, (state, action) => {
+      .addCase(loginUser.fulfilled, (state, action) => {
         state.user = action.payload.user;
         state.isAuthChecked = true;
+        state.error = '';
+        state.loading = false;
+        setCookie('accessToken', action.payload.accessToken);
+        localStorage.setItem('refreshToken', action.payload.refreshToken);
+      });
+    builder
+      .addCase(getUser.pending, (state) => {
+        state.error = '';
+        state.loading = true;
       })
       .addCase(getUser.rejected, (state, action) => {
         state.error = action.error.message as string;
+        state.loading = false;
       })
-      .addCase(getUser.pending, (state) => {
-        state.error = null;
-      });
-    builder
-      .addCase(updateUser.fulfilled, (state, action) => {
+      .addCase(getUser.fulfilled, (state, action) => {
         state.user = action.payload.user;
         state.isAuthChecked = true;
+        state.loading = false;
+      });
+    builder
+      .addCase(updateUser.pending, (state) => {
+        state.error = '';
+        state.loading = true;
       })
       .addCase(updateUser.rejected, (state, action) => {
         state.error = action.error.message as string;
+        state.loading = false;
       })
-      .addCase(updateUser.pending, (state) => {
-        state.error = null;
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.user = action.payload.user;
+        state.isAuthChecked = true;
+        state.loading = false;
       });
     builder
-      .addCase(logoutUser.fulfilled, (state) => {
-        state.error = null;
-        state.user = null;
-        state.isAuthChecked = false;
-        deleteCookie('accessToken');
-        localStorage.removeItem('refreshToken');
+      .addCase(logoutUser.pending, (state) => {
+        state.error = '';
+        state.loading = true;
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.error = action.error.message as string;
+        state.loading = false;
       })
-      .addCase(logoutUser.pending, (state) => {
-        state.error = null;
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.error = '';
+        state.user = null;
+        state.isAuthChecked = false;
+        state.loading = false;
+        deleteCookie('accessToken');
+        localStorage.removeItem('refreshToken');
       });
   }
 });
 
 export const userReducer = userSlice.reducer;
 export const getUserSelector = (state: RootState) => state.user.user;
+export const getUserLoadingSelector = (state: RootState) => state.user.loading;
+export const getUserErrorSelector = (state: RootState) => state.user.error;
 export const getIsAuthCheckedSelector = (state: RootState) =>
   state.user.isAuthChecked;

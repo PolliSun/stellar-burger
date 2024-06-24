@@ -1,7 +1,12 @@
 import { FC, SyntheticEvent, useState } from 'react';
 import { RegisterUI } from '@ui-pages';
-import { useDispatch } from '../../services/store';
-import { registerUser } from '../../services/slices/userSlice';
+import { useDispatch, useSelector } from '../../services/store';
+import {
+  registerUser,
+  getUserErrorSelector,
+  getUserLoadingSelector
+} from '../../services/slices/userSlice';
+import { Preloader } from '@ui';
 
 export const Register: FC = () => {
   const dispatch = useDispatch();
@@ -9,6 +14,8 @@ export const Register: FC = () => {
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const error = useSelector(getUserErrorSelector);
+  const loading = useSelector(getUserLoadingSelector);
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
@@ -16,9 +23,11 @@ export const Register: FC = () => {
     dispatch(registerUser({ email, name, password }));
   };
 
-  return (
+  return loading ? (
+    <Preloader />
+  ) : (
     <RegisterUI
-      errorText=''
+      errorText={error}
       email={email}
       userName={userName}
       password={password}

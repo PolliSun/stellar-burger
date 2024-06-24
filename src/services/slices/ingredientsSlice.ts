@@ -47,5 +47,7 @@ export const ingredientSlice = createSlice({
 
 export const getIngredientsState = (state: RootState) =>
   state.ingredients.ingredients;
+export const getIngredientsLoadingSelector = (state: RootState) =>
+  state.ingredients.loading;
 
 export const ingredientReduce = ingredientSlice.reducer;

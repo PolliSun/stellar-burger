@@ -1,16 +1,36 @@
-import { TConstructorIngredient, TIngredient } from '@utils-types';
-import { createSlice, PayloadAction, nanoid } from '@reduxjs/toolkit';
+import { TConstructorIngredient, TIngredient, TOrder } from '@utils-types';
+import {
+  createSlice,
+  PayloadAction,
+  nanoid,
+  createAsyncThunk
+} from '@reduxjs/toolkit';
+import { orderBurgerApi } from '@api';
 import { RootState } from '../store';
 
 export type TConstructorState = {
   bun: TIngredient | null;
   ingredients: TConstructorIngredient[];
+  orderModalData: TOrder | null;
+  error: string | null;
+  loading: boolean;
 };
 
 export const initialState: TConstructorState = {
   bun: null,
-  ingredients: []
+  ingredients: [],
+  orderModalData: null,
+  error: null,
+  loading: false
 };
+
+export const createOrder = createAsyncThunk(
+  'orders/createOrder',
+  async (ingredients: string[]) => {
+    const response = await orderBurgerApi(ingredients);
+    return response.order;
+  }
+);
 
 export const constructorSlice = createSlice({
   name: 'constructorBurger',
@@ -41,16 +61,41 @@ export const constructorSlice = createSlice({
         state.ingredients[index]
       ];
     },
-    clearIngredient: (state) => (state = initialState)
+    setOrderModalData: (state, action: PayloadAction<TOrder | null>) => {
+      if (!action.payload) {
+        state.ingredients = [];
+        state.bun = null;
+      }
+      state.orderModalData = action.payload;
+    }
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(createOrder.pending, (state) => {
+        state.error = null;
+        state.loading = true;
+      })
+      .addCase(createOrder.rejected, (state, action) => {
+        state.error = action.error.message as string;
+        state.loading = false;
+      })
+      .addCase(createOrder.fulfilled, (state, action) => {
+        state.orderModalData = action.payload;
+        state.loading = false;
+      });
   }
 });
 
 export const getConstructorState = (state: RootState) =>
   state.constructorBurger;
+export const getOrderModalData = (state: RootState) =>
+  state.constructorBurger.orderModalData;
+export const getConstructorLoading = (state: RootState) =>
+  state.constructorBurger.loading;
 export const {
   addIngredient,
   removeIngredient,
   moveIngredientPosition,
-  clearIngredient
+  setOrderModalData
 } = constructorSlice.actions;
 export const constructorReduce = constructorSlice.reducer;

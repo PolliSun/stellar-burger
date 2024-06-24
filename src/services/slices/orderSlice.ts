@@ -1,29 +1,21 @@
 import { TOrder } from '@utils-types';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { orderBurgerApi, getOrdersApi, getOrderByNumberApi } from '@api';
+import { getOrdersApi, getOrderByNumberApi } from '@api';
 import { RootState } from '../store';
 
 export type TOrderState = {
   orders: TOrder[];
-  orderRequest: boolean;
+  currentOrder: TOrder | null;
   error: string | null;
-  orderModalData: null | TOrder;
+  loading: boolean;
 };
 
 export const initialState: TOrderState = {
   orders: [],
-  orderRequest: false,
+  currentOrder: null,
   error: null,
-  orderModalData: null
+  loading: false
 };
-
-export const createOrder = createAsyncThunk(
-  'orders/createOrder',
-  async (ingredients: string[]) => {
-    const response = await orderBurgerApi(ingredients);
-    return response.order;
-  }
-);
 
 export const getOrderByNumber = createAsyncThunk(
   'orders/getOrderByNumber',
@@ -40,37 +32,39 @@ export const getOrder = createAsyncThunk('order/getOrders', async () =>
 export const orderSlice = createSlice({
   name: 'order',
   initialState,
-  reducers: {
-    resetOrderModalData: (state) => (state = initialState)
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(getOrder.pending, (state) => {
         state.error = null;
+        state.loading = true;
       })
       .addCase(getOrder.rejected, (state, action) => {
         state.error = action.error.message as string;
+        state.loading = false;
       })
       .addCase(getOrder.fulfilled, (state, action) => {
         state.orders = action.payload;
+        state.loading = false;
       });
+
     builder
-      .addCase(createOrder.pending, (state) => {
-        state.orderRequest = true;
+      .addCase(getOrderByNumber.pending, (state) => {
+        state.currentOrder = null;
+        state.loading = true;
+        state.error = null;
       })
-      .addCase(createOrder.fulfilled, (state, action) => {
-        state.orders.push(action.payload);
-        state.orderRequest = false;
-        state.orderModalData = action.payload;
+      .addCase(getOrderByNumber.rejected, (state, action) => {
+        state.error = action.error.message as string;
+        state.loading = false;
+      })
+      .addCase(getOrderByNumber.fulfilled, (state, action) => {
+        state.currentOrder = action.payload.orders[0];
+        state.loading = false;
       });
-    builder.addCase(getOrderByNumber.fulfilled, (state, action) => {
-      state.orderModalData = action.payload.orders[0];
-    });
   }
 });
 
-export const getOrderRequest = (state: RootState) => state.order.orderRequest;
-export const getOrderModal = (state: RootState) => state.order.orderModalData;
-export const { resetOrderModalData } = orderSlice.actions;
-
+export const getCurrentOrder = (state: RootState) => state.order.currentOrder;
+export const getLoadingSelector = (state: RootState) => state.order.loading;
 export const orderReducer = orderSlice.reducer;
