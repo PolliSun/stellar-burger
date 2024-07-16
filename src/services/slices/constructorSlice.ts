@@ -9,7 +9,7 @@ import { orderBurgerApi } from '@api';
 import { RootState } from '../store';
 
 export type TConstructorState = {
-  bun: TIngredient | null;
+  bun: TConstructorIngredient | null;
   ingredients: TConstructorIngredient[];
   orderModalData: TOrder | null;
   error: string | null;

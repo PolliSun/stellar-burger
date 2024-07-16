@@ -3,6 +3,7 @@ const modal = '[data-cy="modal"]';
 const ingredientBun = '[data-cy="ingredient-643d69a5c3f7b9001cfa093c"]';
 const ingredientsTopping = '[data-cy="constructor-ingredients"]';
 const modalCloseButton = '[data-cy="modal-close-button"]';
+const bun = 'Краторная булка N-200i';
 
 describe('Тестирование конструктор бургера', () => {
   beforeEach(() => {
@@ -19,16 +20,12 @@ describe('Тестирование конструктор бургера', () =>
     cy.get('[data-cy="ingredient-643d69a5c3f7b9001cfa0941"] button').click();
     cy.get('[data-cy="ingredient-643d69a5c3f7b9001cfa0942"] button').click();
 
-    cy.get('[data-cy="constructor-bun-1"]')
-      .contains('Краторная булка N-200i')
-      .should('exist');
+    cy.get('[data-cy="constructor-bun-1"]').contains(bun).should('exist');
     cy.get(ingredientsTopping)
       .contains('Биокотлета из марсианской Магнолии')
       .should('exist');
     cy.get(ingredientsTopping).contains('Соус Spicy-X').should('exist');
-    cy.get('[data-cy="constructor-bun-2"]')
-      .contains('Краторная булка N-200i')
-      .should('exist');
+    cy.get('[data-cy="constructor-bun-2"]').contains(bun).should('exist');
   });
 });
 
@@ -46,7 +43,7 @@ describe('Тестирование работы модального окна', 
 
   it('Тест открытие модального окна', () => {
     cy.get(modal).should('be.visible');
-    cy.get(modal).contains('Краторная булка N-200i').should('exist');
+    cy.get(modal).contains(bun).should('exist');
     cy.get(modalCloseButton).should('exist');
   });
 

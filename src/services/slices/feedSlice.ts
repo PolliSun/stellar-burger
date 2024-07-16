@@ -41,6 +41,7 @@ export const feedSlice = createSlice({
       .addCase(getFeedApi.fulfilled, (state, action) => {
         state.loading = false;
         state.feed = action.payload;
+        state.error = null;
       });
   }
 });
