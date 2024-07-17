@@ -9,7 +9,7 @@ import {
   initialState
 } from '../constructorSlice';
 
-import { mockOrder, mockBun, mockMain } from '../mockData';
+import { mockOrder, mockBun, mockTopping } from '../mockData';
 import { nanoid } from '@reduxjs/toolkit';
 
 describe('Тестирование экшенов конструктора', () => {
@@ -29,12 +29,12 @@ describe('Тестирование экшенов конструктора', () 
   });
 
   test('Тест обработка состояния добавления начинки', () => {
-    const action = addIngredient(mockMain);
+    const action = addIngredient(mockTopping);
     const state = reducer(initialState, action);
     expect(state.ingredients).toHaveLength(1);
     expect(state.ingredients[0]).toEqual(
       expect.objectContaining({
-        ...mockMain,
+        ...mockTopping,
         id: expect.any(String)
       })
     );
@@ -43,7 +43,7 @@ describe('Тестирование экшенов конструктора', () 
   test('Тест обработка состояния удаления ингредиента', () => {
     const initialStateWithIngredient = {
       ...initialState,
-      ingredients: [{ ...mockMain, id: '123' }]
+      ingredients: [{ ...mockTopping, id: '123' }]
     };
     const action = removeIngredient('123');
     const state = reducer(initialStateWithIngredient, action);
@@ -54,8 +54,8 @@ describe('Тестирование экшенов конструктора', () 
     const initialStateWithIngredients = {
       ...initialState,
       ingredients: [
-        { ...mockMain, id: '1' },
-        { ...mockMain, id: '2' }
+        { ...mockTopping, id: '1' },
+        { ...mockTopping, id: '2' }
       ]
     };
     const action = moveIngredientPosition({ index: 0, newIndex: 1 });
@@ -70,10 +70,10 @@ describe('Тестирование экшенов конструктора', () 
     expect(state.orderModalData).toEqual(mockOrder);
   });
 
-  test('Тест очистки ингредиентов после оформления заказа', () => {
+  test('Тест очистки ингредиентов после закрытия модального окна заказа', () => {
     const initialStateWithOrder = {
       ...initialState,
-      ingredients: [{ ...mockMain, id: nanoid() }],
+      ingredients: [{ ...mockTopping, id: nanoid() }],
       bun: { ...mockBun, id: nanoid() },
       orderModalData: mockOrder
     };

@@ -14,7 +14,7 @@ describe('Тестирование экшенов заказов', () => {
 });
 
 describe('Тестирование работы редьюсеров для getOrderByNumber', () => {
-  test('Тест обработка состояния pending', () => {
+  test('Тест обработка состояния getOrderByNumber.pending', () => {
     const action = { type: getOrderByNumber.pending.type };
     const state = reducer(initialState, action);
     expect(state.error).toBe(null);
@@ -22,7 +22,7 @@ describe('Тестирование работы редьюсеров для getO
     expect(state.currentOrder).toBe(null);
   });
 
-  test('Тест обработка состояния rejected', () => {
+  test('Тест обработка состояния getOrderByNumber.rejected', () => {
     const errorMessage = 'Ошибка загрузки getOrderByNumber';
     const action = {
       type: getOrderByNumber.rejected.type,
@@ -33,7 +33,7 @@ describe('Тестирование работы редьюсеров для getO
     expect(state.error).toBe(errorMessage);
   });
 
-  test('Тест обработка состояния fulfilled', () => {
+  test('Тест обработка состояния getOrderByNumber.fulfilled', () => {
     const action = {
       type: getOrderByNumber.fulfilled.type,
       payload: mockOrderByNumber

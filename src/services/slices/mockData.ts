@@ -1,5 +1,3 @@
-import { ingredientReduce } from './ingredientsSlice';
-
 export const mockIngredients = {
   ingredients: [
     {
@@ -135,7 +133,7 @@ export const mockBun = {
   image_large: 'https://code.s3.yandex.net/react/code/bun-02-large.png'
 };
 
-export const mockMain = {
+export const mockTopping = {
   _id: '643d69a5c3f7b9001cfa0941',
   name: 'Биокотлета из марсианской Магнолии',
   type: 'main',
