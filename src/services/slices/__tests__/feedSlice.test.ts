@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { feedReduce as reducer, getFeedApi, initialState } from '../feedSlice';
-import { mockFeed as mock } from '../mockData';
+import { mockFeed } from '../mockData';
 
 describe('Тестирование работы редьюсеров слайса feedSlice', () => {
   test('Тест обработка начального состояния заказов', () => {
@@ -26,10 +26,10 @@ describe('Тестирование работы редьюсеров слайс�
   });
 
   test('Тест обработка состояния getFeedApi.fulfilled', () => {
-    const action = { type: getFeedApi.fulfilled.type, payload: mock };
+    const action = { type: getFeedApi.fulfilled.type, payload: mockFeed };
     const state = reducer(initialState, action);
     expect(state.loading).toBe(false);
     expect(state.error).toBe(null);
-    expect(state.feed).toEqual(mock);
+    expect(state.feed).toEqual(mockFeed);
   });
 });

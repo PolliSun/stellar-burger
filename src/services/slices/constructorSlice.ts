@@ -82,6 +82,7 @@ export const constructorSlice = createSlice({
       .addCase(createOrder.fulfilled, (state, action) => {
         state.orderModalData = action.payload;
         state.loading = false;
+        state.error = null;
       });
   }
 });

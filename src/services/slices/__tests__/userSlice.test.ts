@@ -8,7 +8,7 @@ import {
   getUser,
   initialState
 } from '../userSlice';
-import { mockUser as mock } from '../mockData';
+import { mockUser } from '../mockData';
 
 describe('Тестирование экшенов загрузки пользователя', () => {
   test('Тест обработка начального состояния пользователя', () => {
@@ -25,26 +25,27 @@ describe('Тестирование работы редьюсеров для logi
   });
 
   test('Тест обработка состояния loginUser.rejected', () => {
+    const errorMessage = 'Ошибка загрузки loginUser';
     const action = {
       type: loginUser.rejected.type,
-      error: { message: 'Ошибка загрузки loginUser' }
+      error: { message: errorMessage }
     };
     const state = reducer(initialState, action);
     expect(state.loading).toBe(false);
-    expect(state.error).toBe('Ошибка загрузки loginUser');
+    expect(state.error).toBe(errorMessage);
   });
 
   test('Тест обработка состояния loginUser.fulfilled', () => {
     const action = {
       type: loginUser.fulfilled.type,
       payload: {
-        user: mock
+        user: mockUser
       }
     };
     const state = reducer(initialState, action);
     expect(state.loading).toBe(false);
     expect(state.error).toBe('');
-    expect(state.user).toEqual(mock);
+    expect(state.user).toEqual(mockUser);
     expect(state.isAuthChecked).toBe(true);
   });
 });
@@ -58,26 +59,27 @@ describe('Тестирование работы редьюсеров для regi
   });
 
   test('Тест обработка состояния registerUser.rejected', () => {
+    const errorMessage = 'Ошибка загрузки registerUser';
     const action = {
       type: registerUser.rejected.type,
-      error: { message: 'Ошибка загрузки registerUser' }
+      error: { message: errorMessage }
     };
     const state = reducer(initialState, action);
     expect(state.loading).toBe(false);
-    expect(state.error).toBe('Ошибка загрузки registerUser');
+    expect(state.error).toBe(errorMessage);
   });
 
   test('Тест обработка состояния registerUser.fulfilled', () => {
     const action = {
       type: registerUser.fulfilled.type,
       payload: {
-        user: mock
+        user: mockUser
       }
     };
     const state = reducer(initialState, action);
     expect(state.loading).toBe(false);
     expect(state.error).toBe('');
-    expect(state.user).toEqual(mock);
+    expect(state.user).toEqual(mockUser);
     expect(state.isAuthChecked).toBe(true);
   });
 });
@@ -91,13 +93,14 @@ describe('Тестирование работы редьюсеров для logo
   });
 
   test('Тест обработка состояния logoutUser.rejected', () => {
+    const errorMessage = 'Ошибка загрузки logoutUser';
     const action = {
       type: logoutUser.rejected.type,
-      error: { message: 'Ошибка загрузки logoutUser' }
+      error: { message: errorMessage }
     };
     const state = reducer(initialState, action);
     expect(state.loading).toBe(false);
-    expect(state.error).toBe('Ошибка загрузки logoutUser');
+    expect(state.error).toBe(errorMessage);
   });
 
   test('Тест обработка состояния logoutUser.fulfilled', () => {
@@ -105,7 +108,7 @@ describe('Тестирование работы редьюсеров для logo
     const state = reducer(initialState, action);
     expect(state.loading).toBe(false);
     expect(state.error).toBe('');
-    expect(state.user).toBeNull();
+    expect(state.user).toBe(null);
     expect(state.isAuthChecked).toBe(false);
   });
 });
@@ -119,26 +122,27 @@ describe('Тестирование работы редьюсеров для upda
   });
 
   test('Тест обработка состояния updateUser.rejected', () => {
+    const errorMessage = 'Ошибка загрузки updateUser';
     const action = {
       type: updateUser.rejected.type,
-      error: { message: 'Ошибка загрузки updateUser' }
+      error: { message: errorMessage }
     };
     const state = reducer(initialState, action);
     expect(state.loading).toBe(false);
-    expect(state.error).toBe('Ошибка загрузки updateUser');
+    expect(state.error).toBe(errorMessage);
   });
 
   test('Тест обработка состояния updateUser.fulfilled', () => {
     const action = {
       type: updateUser.fulfilled.type,
       payload: {
-        user: mock
+        user: mockUser
       }
     };
     const state = reducer(initialState, action);
     expect(state.loading).toBe(false);
     expect(state.error).toBe('');
-    expect(state.user).toEqual(mock);
+    expect(state.user).toEqual(mockUser);
     expect(state.isAuthChecked).toBe(true);
   });
 });
@@ -152,26 +156,27 @@ describe('Тестирование работы редьюсеров для getU
   });
 
   test('Тест обработка состояния getUser.rejected', () => {
+    const errorMessage = 'Ошибка загрузки getUser';
     const action = {
       type: getUser.rejected.type,
-      error: { message: 'Ошибка загрузки getUser' }
+      error: { message: errorMessage }
     };
     const state = reducer(initialState, action);
     expect(state.loading).toBe(false);
-    expect(state.error).toBe('Ошибка загрузки getUser');
+    expect(state.error).toBe(errorMessage);
   });
 
   test('Тест обработка состояния getUser.fulfilled', () => {
     const action = {
       type: getUser.fulfilled.type,
       payload: {
-        user: mock
+        user: mockUser
       }
     };
     const state = reducer(initialState, action);
     expect(state.loading).toBe(false);
     expect(state.error).toBe('');
-    expect(state.user).toEqual(mock);
+    expect(state.user).toEqual(mockUser);
     expect(state.isAuthChecked).toBe(true);
   });
 });
