@@ -52,7 +52,7 @@ describe('Тестирование работы модального окна', 
     cy.get(modal).should('not.exist');
   });
 
-  it('Тест закрытия модального окан по клику на оверлей', () => {
+  it('Тест закрытия модального окна по клику на оверлей', () => {
     cy.get('[data-cy="modal-overlay"]').click({ force: true });
     cy.get(modal).should('not.exist');
   });
@@ -65,19 +65,20 @@ describe('Тестирование оформление заказа', () => {
     }).as('getIngredients');
     cy.intercept('GET', 'api/auth/user', {
       fixture: 'user.json'
-    }).as('getUser');
+    });
     cy.intercept('POST', 'api/orders', {
       fixture: 'order.json'
     }).as('createOrder');
-    cy.viewport(1300, 800);
-    cy.visit(baseUrl);
-    cy.wait('@getIngredients');
 
     window.localStorage.setItem(
       'refreshToken',
       JSON.stringify('test-refreshToken')
     );
     cy.setCookie('accessToken', 'test-accessToken');
+
+    cy.viewport(1300, 800);
+    cy.visit(baseUrl);
+    cy.wait('@getIngredients');
   });
 
   afterEach(() => {
@@ -91,6 +92,7 @@ describe('Тестирование оформление заказа', () => {
     cy.get('[data-cy="ingredient-643d69a5c3f7b9001cfa0942"] button').click();
 
     cy.get('[data-cy="order-button"] button').click();
+    cy.wait('@createOrder');
 
     cy.get(modal).should('be.visible');
     cy.get(modal).contains('45713').should('exist');
