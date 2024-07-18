@@ -46,6 +46,7 @@ export const orderSlice = createSlice({
       .addCase(getOrder.fulfilled, (state, action) => {
         state.orders = action.payload;
         state.loading = false;
+        state.error = null;
       });
 
     builder
@@ -61,6 +62,7 @@ export const orderSlice = createSlice({
       .addCase(getOrderByNumber.fulfilled, (state, action) => {
         state.currentOrder = action.payload.orders[0];
         state.loading = false;
+        state.error = null;
       });
   }
 });
